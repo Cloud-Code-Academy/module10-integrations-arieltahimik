@@ -32,20 +32,33 @@ public with sharing class DummyJSONCallout {
 	 * This callout method should work in triggers
 	 * 
      * @param dummyUserId The ID of the user in the external system to fetch data for.
-     */
+    */
 
+	@future(callout=true)
 	public static void getDummyJSONUserFromId(String dummyUserId) {
 		// Create HTTP request to send.
+		Http http = new Http();
+		HttpRequest request = new HttpRequest();		
 
 		// Set the endpoint URL. Use direct URL or for best practices use Named Credential.
+		request.setEndpoint('https://dummyjson.com/user/' + dummyUserId);
 
 		// Set the HTTP method to GET.
+		request.setMethod('GET');
 
 		// Send the HTTP request and get the response.
+		HttpResponse response = http.send(request);
 
 		// If the HTTP response code is successful, parse the JSON response and update the contact.
-		Contact cont = null;
-		upsert cont DummyJSON_Id__c; //insert/update from the JSON response using the external id (dummyUserId)
+		if (response.getStatusCode() == 200) {
+			Contact con = createContactFromJson(response.getBody());
+			con.DummyJSON_Id__c = dummyUserId;			
+			upsert con DummyJSON_Id__c; //insert/update from the JSON response using the external id (dummyUserId)
+		} else {
+            // If the status code is not 200, something went wrong with the request
+            System.debug('HTTP request failed. Status code: ' + response.getStatusCode());
+            System.debug('Response body: ' + response.getBody());
+        }
 	}
 
 	/* 
@@ -66,16 +79,27 @@ public with sharing class DummyJSONCallout {
 	@TestVisible // Allows test class to see this method. Since it is private, it would not be visible otherwise.
 	private static Contact createContactFromJson(String jsonResponse) {
 		// Deserialize the JSON string into map of primitive data types.
+		Map<String, Object> jsonMap = (Map<String, Object>) JSON.deserializeUntyped(jsonResponse);
 
 		// Create a new contact from the JSON response.
+		Contact con = new Contact();
 
 		// Set the contact fields from the JSON response.
+		con.Email = (String) jsonMap.get('email');
+		con.Phone = (String) jsonMap.get('phone');
+		con.Birthdate = Date.valueOf((String) jsonMap.get('birthDate'));
 
 		// Deserialize the address from the JSON response.
-
+		Map<String, Object> addressMap = (Map<String, Object>) jsonMap.get('address');
+		
 		// Set the address fields on the contact.
+		con.MailingStreet = (String) addressMap.get('address');
+		con.MailingCity = (String) addressMap.get('city');
+		con.MailingState = (String) addressMap.get('state');
+		con.MailingPostalCode = (String) addressMap.get('postalCode');
+		con.MailingCountry = (String) addressMap.get('country');
 
-		return null;
+		return con;
 	}
 
 	/* 

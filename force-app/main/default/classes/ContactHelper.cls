@@ -24,22 +24,19 @@ public with sharing class ContactHelper {
     public static void insertNewContacts(List<Contact> newContacts) {
         Integer randomNumber;
         Integer min =   0;
-        Integer max = 100;        
+        Integer max = 100;
 
         for (Contact con : newContacts) {
-
             // When a contact is inserted
-            // if DummyJSON_Id__c is null, generate a random number between 0 and 100 and set this as the contact's DummyJSON_Id__c value
             if (con.DummyJSON_Id__c == null) {
                 randomNumber = (Integer) (Math.random() * (max - min + 1)) + min;
                 con.DummyJSON_Id__c = String.valueOf(randomNumber);
             }
 
-            //When a contact is inserted
+            // When a contact is inserted
             // if DummyJSON_Id__c is less than or equal to 100, call the getDummyJSONUserFromId API
             if (Integer.valueOf(con.DummyJSON_Id__c) <= 100) {
-                //DummyJSONCallout.getDummyJSONUserFromId(con.DummyJSON_Id__c);
-                System.debug('Callout to getDummyJSONUserFromId API initiated for con.DummyJSON_Id__c: ' + con.DummyJSON_Id__c);
+                DummyJSONCallout.getDummyJSONUserFromId(con.DummyJSON_Id__c);
             }
         }
     }
