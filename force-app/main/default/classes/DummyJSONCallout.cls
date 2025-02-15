@@ -41,7 +41,8 @@ public with sharing class DummyJSONCallout {
 		HttpRequest request = new HttpRequest();		
 
 		// Set the endpoint URL. Use direct URL or for best practices use Named Credential.
-		request.setEndpoint('https://dummyjson.com/user/' + dummyUserId);
+		//request.setEndpoint('https://dummyjson.com/user/' + dummyUserId);
+		request.setEndpoint('callout:DummyJsonUser' + dummyUserId);
 
 		// Set the HTTP method to GET.
 		request.setMethod('GET');

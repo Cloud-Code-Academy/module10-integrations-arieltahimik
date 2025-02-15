@@ -23,13 +23,13 @@ public with sharing class ContactHelper {
 
     public static void insertNewContacts(List<Contact> newContacts) {
         Integer randomNumber;
-        Integer min =   0;
-        Integer max = 100;
+        final Integer MIN =   0;
+        final Integer MAX = 100;
 
         for (Contact con : newContacts) {
             // When a contact is inserted
             if (con.DummyJSON_Id__c == null) {
-                randomNumber = (Integer) (Math.random() * (max - min + 1)) + min;
+                randomNumber = (Integer) (Math.random() * (MAX - MIN + 1)) + MIN;
                 con.DummyJSON_Id__c = String.valueOf(randomNumber);
             }
 
