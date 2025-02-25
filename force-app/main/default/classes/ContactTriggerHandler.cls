@@ -33,7 +33,7 @@ public with sharing class ContactTriggerHandler extends TriggerHandler {
 
 
     public override void beforeUpdate() {
-        ContactHelper.updateContacts(newConList, oldConList);
+        ContactHelper.updateContacts(oldConList);
     }
 
 }

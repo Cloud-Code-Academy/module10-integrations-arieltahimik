@@ -41,15 +41,14 @@ public with sharing class ContactHelper {
         }
     }
 
-    public static void updateContacts(List<Contact> newContacts, List<Contact> oldContacts) {
-        for (Contact con : newContacts) {
-            for (Contact oldCon : oldContacts) {
-                // if DummyJSON_Id__c is greater than 100, call the postCreateDummyJSONUser API
-                if (Integer.valueOf(con.DummyJSON_Id__c) > 100) {
-                    //DummyJSONCallout.postCreateDummyJSONUser(con.Id);
-                    System.debug('Callout to postCreateDummyJSONUser API initiated for Contact Id: ' + con.Id);
-                }
+    public static void updateContacts(List<Contact> oldContacts) {
+        
+        for (Contact con : oldContacts) {
+            // if DummyJSON_Id__c is greater than 100, call the postCreateDummyJSONUser API
+            if (Integer.valueOf(con.DummyJSON_Id__c) > 100) {
+                DummyJSONCallout.postCreateDummyJSONUser(con.Id);                
             }
         }
+        
     }
 }
