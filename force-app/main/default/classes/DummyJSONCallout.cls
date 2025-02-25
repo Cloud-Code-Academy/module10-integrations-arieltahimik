@@ -177,8 +177,6 @@ public with sharing class DummyJSONCallout {
 		// Serialize the map into a JSON string.
 		String payload = JSON.serialize(payloadMap);
 
-		System.debug(payload);
-
 		// Make sure to check that required contacts fields have a value. Default the value to unknown if it does not exists.
 		if (con.LastName == null) {
 			payloadMap.put('lastName', 'unknown');
